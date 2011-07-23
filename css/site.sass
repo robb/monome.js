@@ -1,0 +1,95 @@
+@import "mixins.sass"
+@import "reset.scss"
+
+body
+  font:  $base-font ff-tisa-web-pro, Georgia, serif
+  color: #222
+  background: #FFF
+
+  line-height: $vertical-rhythm
+
+  -webkit-font-smoothing: antialiased
+
+h1, h2, h3, h4, h5
+  color: #222
+
+h1
+  @include adjust-font-size(  2, 1, 1)
+h2
+  font-weight: normal
+  @include adjust-font-size(1.5, 1, 1)
+
+p, blockquote, hr
+
+pre, code
+  font-family: Menlo, monospace
+pre
+  @include adjust-font-size(0.8, 0.5, 0.5)
+
+pre
+  background: #EEE
+  overflow: auto
+  border-radius: 0.2em * $base-scale
+
+  padding: 1em * $base-scale
+
+pre::-webkit-scrollbar
+  width:  8px
+  height: 8px
+
+pre::-webkit-scrollbar-thumb
+  border-radius: 0.5em * $base-scale
+  background: #CCC
+
+pre::-webkit-scrollbar-track
+  background: #EEE
+  border-radius: 0.5em * $base-scale
+
+// Layout
+
+.wrapper
+  $width: 700px
+  $gap:   24px
+
+  margin: 0 auto
+  width:   $width
+  padding: 0 20px
+
+  .column
+    float: left
+    width: ($width - $gap) / 2
+
+    -webkit-hyphens: auto
+
+  .column.left
+    margin-right: $gap
+
+hr
+  border: none
+  background: #CCC
+  height: 1px
+  width: 100%
+
+.clearfix:before, .clearfix:after
+  content: '\0020'
+  display: block
+  overflow: hidden
+  visibility: hidden
+  width:  0
+  height: 0
+
+.clearfix:after, .column.right:after
+  clear: both
+
+header
+  h1
+    @include adjust-font-size(3, 1, 0)
+
+    .js
+      font-style:  italic
+      margin-left: -0.06em
+
+  p.about
+    @include adjust-font-size(1, 0, 1)
+    font-style: italic
+    color: #777

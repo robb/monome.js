@@ -1,1 +1,78 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <title>
+      monome.js
+    </title>
+    <meta charset="utf-8">
+    <meta name="author" content="Robert Böhnke">
+    <meta name="publisher" content="Robert Böhnke">
+    <meta name="copyright" content="Robert Böhnke">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" media="screen, projection" href="/css/site.css" />
+    <script type="text/javascript" src="http://use.typekit.com/wvu8jzl.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  </head>
+  <body>
+    <header>
+      <div class="wrapper">
+        <h1>
+  <span class="monome">monome</span><span class="dot">.</span><span class="js">js</span>
+</h1>
+<p class="about">
+  A lightweight library for writing monome applications with node.
+</p>
+
+      </div>
+    </header>
+
+    <section>
+      <div class="wrapper clearfix">
+        <section class="clearfix">
+  <p class="column left">
+    <i>Monome</i> is a company that produces
+    adaptable, minimalist interfaces, such as the <i>sixty four</i>, the
+    <i>two fifty-six</i> and the <i>arc</i>.<br>
+    Find them at <a href="http://monome.org">monome.org</a>.
+  </p>
+
+  <p class="column right">
+    <i>Monome.js</i> is a lightweight wrapper around libmonome,
+    it aims at simplifying the requirements for writing beatiful
+    monome applications.
+  </p>
+</section>
+
+<h2>an example.</h2>
+
+<section>
+  <pre ><code>{Monome} = require 'monome'
+monome = new Monome '/dev/tty.usbserial-m64-0123'
+
+monome.onbuttondown = ({x, y}) ->
+  monome.set x, y, on
+
+monome.onbuttonup = ({x, y}) ->
+  monome.set x, y, off
+
+monome.start()</code></pre>
+  <p>
+    Please note this example uses <i>CoffeeScript</i> rather than JavaScript.
+  </p>
+</section>
+
+<hr>
+
+
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrapper">
+        monome.js was created by <a href="http://robb.is">Robert Böhnke</a>.
+      </div>
+    </footer>
+  </body>
+</html>
