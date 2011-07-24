@@ -109,6 +109,12 @@ h2 {
   line-height: 1em;
   font-size: 150%; }
 
+p, blockquote, hr {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  line-height: 1.5em;
+  font-size: 100%; }
+
 pre, code {
   font-family: Menlo, monospace; }
 
