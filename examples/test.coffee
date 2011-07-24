@@ -1,4 +1,4 @@
-{Monome} = require './build/default/monome'
+{Monome} = require 'monome'
 
 monome = new Monome '/dev/tty.usbserial-m64-0123'
 
