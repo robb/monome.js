@@ -183,13 +183,11 @@ Handle<Value> Monome::Start(const Arguments& args)
 
 void Monome::Start() {
   if (!ev_is_active(&watcher)) {
-    ev_async_start(EV_DEFAULT_UC_ &watcher);
+    ev_io_start(EV_DEFAULT_ &watcher);
     Ref();
 
     monome_register_handler(device, MONOME_BUTTON_UP,   EventHandler, this);
     monome_register_handler(device, MONOME_BUTTON_DOWN, EventHandler, this);
-
-    pthread_create(&thread, NULL, EventThread, device);
   }
 }
 
@@ -203,75 +201,54 @@ Handle<Value> Monome::Stop(const Arguments& args)
 
 void Monome::Stop() {
   if (ev_is_active(&watcher)) {
-    pthread_cancel(thread);
-
     monome_unregister_handler(device, MONOME_BUTTON_DOWN);
     monome_unregister_handler(device, MONOME_BUTTON_UP);
 
-    ev_async_stop(EV_DEFAULT_UC_ &watcher);
+    ev_io_stop(EV_DEFAULT_ &watcher);
     Unref();
   }
 }
 
 // Event handling
-void *Monome::EventThread(void *userData)
-{
-  monome_t *device = (monome_t *) userData;
-  monome_event_loop(device);
-
-  return NULL;
-}
-
-void Monome::EventHandler(const monome_event_t *event, void *monome) {
-  Monome *m = (Monome *) monome;
-
-  // Push event into queue
-  pthread_mutex_lock(&m->eventQueueMutex);
-  m->eventQueue.push(*event);
-  pthread_mutex_unlock(&m->eventQueueMutex);
-
-  ev_async_send(EV_DEFAULT_UC_ &m->watcher);
-}
-
-void Monome::EventCallback(EV_P_ ev_async *watcher, int revents)
+void Monome::EventCallback(EV_P_ ev_io *watcher, int revents)
 {
   Monome *m = (Monome *) watcher->data;
-  monome_event_t event;
 
-  pthread_mutex_lock(&m->eventQueueMutex);
-  while (m->eventQueue.size()) {
-    event = m->eventQueue.front();
-    m->eventQueue.pop();
+  while(monome_event_handle_next(m->device));
+}
 
-    Persistent<String> symbol;
-    switch (event.event_type) {
-      case MONOME_BUTTON_UP:
-        symbol = onButtonUp;
-        break;
+void Monome::EventHandler(const monome_event_t *event, void *monome)
+{
+  Persistent<String> symbol;
 
-      case MONOME_BUTTON_DOWN:
-        symbol = onButtonDown;
-        break;
+  switch (event->event_type) {
+    case MONOME_BUTTON_UP:
+      symbol = onButtonUp;
+      break;
 
-      default:
-        return; // Ignore all other events
-    }
+    case MONOME_BUTTON_DOWN:
+      symbol = onButtonDown;
+      break;
 
-    Local<Value> callback_v = m->handle_->Get(symbol);
-    if (!callback_v->IsFunction()) {
-         // callback not defined, ignore
-         return;
-    }
-    Local<Function> callback = Local<Function>::Cast(callback_v);
-
-    // Create event argument
-    Local<Value> argv[2];
-    argv[0] = Local<Value>::New(Integer::New(event.grid.x));
-    argv[1] = Local<Value>::New(Integer::New(event.grid.y));
-
-    callback->Call(m->handle_, 2, argv);
+    default:
+      return;
   }
-  pthread_mutex_unlock(&m->eventQueueMutex);
+
+  Monome *m = (Monome *) monome;
+
+  Local<Value> callback_v = m->handle_->Get(symbol);
+  if (!callback_v->IsFunction()) {
+       // callback not defined, ignore
+       return;
+  }
+  Local<Function> callback = Local<Function>::Cast(callback_v);
+
+  // Create event argument
+  Local<Value> argv[2];
+  argv[0] = Local<Value>::New(Integer::New(event->grid.x));
+  argv[1] = Local<Value>::New(Integer::New(event->grid.y));
+
+  callback->Call(m->handle_, 2, argv);
 }
 
 Persistent<FunctionTemplate> Monome::ft;

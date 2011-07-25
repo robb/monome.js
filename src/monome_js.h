@@ -1,15 +1,12 @@
 #ifndef MONOME_JS_H_
 #define MONOME_JS_H_
 
-#include <queue>
-
 #include <node.h>
 #include <ev.h>
 #include <v8.h>
 
 #include <monome.h>
 #include <stdarg.h>
-#include <pthread.h>
 
 #include <assert.h>
 
@@ -21,13 +18,8 @@ class Monome : node::ObjectWrap {
     static v8::Persistent<v8::FunctionTemplate> ft;
 
   protected:
-    pthread_t thread;
-    ev_async  watcher;
-
-    monome_t  *device;
-
-    std::queue<monome_event_t> eventQueue;
-    pthread_mutex_t eventQueueMutex;
+    ev_io    watcher;
+    monome_t *device;
 
     Monome(const char *dev)
     {
@@ -40,10 +32,8 @@ class Monome : node::ObjectWrap {
       ev_init(&watcher, EventCallback);
       watcher.data = this;
 
-      ev_set_priority(&watcher, EV_MAXPRI);
-
-      eventQueue = std::queue<monome_event_t>();
-      pthread_mutex_init(&eventQueueMutex, NULL);
+      int fd = monome_get_fd(device);
+      ev_io_set(&watcher, fd, EV_READ);
     }
 
     ~Monome()
@@ -69,16 +59,14 @@ class Monome : node::ObjectWrap {
     static void SetRotation(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
 
     // Callbacks
-    static void EventCallback(EV_P_ ev_async *watcher, int revents);
+    static void EventCallback(EV_P_ ev_io *watcher, int revents);
+    static void EventHandler(const monome_event_t *event, void *monome);
 
     void Start();
     void Stop();
 
   private:
     static const char* ToCString(const v8::String::Utf8Value& value);
-
-    static void *EventThread(void *userData);
-    static void EventHandler(const monome_event_t *event, void *monome);
 };
 
 } // namespace node
