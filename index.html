@@ -37,13 +37,13 @@
       it aims at facilitating the process of writing beatiful
       monome applications in procedural languages.
     </p>
-    
+
     <p>
       Monome.js is currently in very early stages, and not ready
       for production use yet.
     </p>
   </div>
-  
+
   <div class="column right">
     <p>
       <i>Monome</i> is a company that produces
@@ -60,11 +60,11 @@
   <pre ><code>{Monome} = require 'monome'
 monome = new Monome '/dev/tty.usbserial-m64-0123'
 
-monome.onbuttondown = ({x, y}) ->
-  monome.set x, y, on
+monome.onButtonDown = ({x, y}) ->
+  monome.setLED x, y, on
 
-monome.onbuttonup = ({x, y}) ->
-  monome.set x, y, off
+monome.onButtonUp = ({x, y}) ->
+  monome.setLED x, y, off
 
 monome.start()</code></pre>
   <p>
@@ -83,7 +83,6 @@ monome.start()</code></pre>
 </section>
 
 <hr>
-
 
       </div>
     </section>
