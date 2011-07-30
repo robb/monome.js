@@ -43,20 +43,33 @@ class Monome : node::ObjectWrap {
 
     // Methods
     static v8::Handle<v8::Value> New(const v8::Arguments& args);
-    static v8::Handle<v8::Value> SetLED(const v8::Arguments& args);
     static v8::Handle<v8::Value> SetAll(const v8::Arguments& args);
+    static v8::Handle<v8::Value> SetLED(const v8::Arguments& args);
+    static v8::Handle<v8::Value> SetRow(const v8::Arguments& args);
+    static v8::Handle<v8::Value> SetColumn(const v8::Arguments& args);
+    static v8::Handle<v8::Value> SetRing(const v8::Arguments& args);
 
     static v8::Handle<v8::Value> Start(const v8::Arguments& args);
     static v8::Handle<v8::Value> Stop(const v8::Arguments& args);
 
-    // Accessors
-    static v8::Handle<v8::Value> GetRows(v8::Local<v8::String> property, const v8::AccessorInfo& info);
-    static v8::Handle<v8::Value> GetColumns(v8::Local<v8::String> property, const v8::AccessorInfo& info);
-    static v8::Handle<v8::Value> GetRotation(v8::Local<v8::String> property, const v8::AccessorInfo& info);
-    static v8::Handle<v8::Value> GetType(v8::Local<v8::String> property, const v8::AccessorInfo& info);
-    static v8::Handle<v8::Value> GetDevPath(v8::Local<v8::String> property, const v8::AccessorInfo& info);
+    static v8::Handle<v8::Value> EnableTilt(const v8::Arguments& args);
+    static v8::Handle<v8::Value> DisableTilt(const v8::Arguments& args);
 
-    static void SetRotation(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
+    // Accessors
+    static v8::Handle<v8::Value> GetRows(v8::Local<v8::String> property,
+                                         const v8::AccessorInfo& info);
+    static v8::Handle<v8::Value> GetColumns(v8::Local<v8::String> property,
+                                            const v8::AccessorInfo& info);
+    static v8::Handle<v8::Value> GetRotation(v8::Local<v8::String> property,
+                                             const v8::AccessorInfo& info);
+    static v8::Handle<v8::Value> GetType(v8::Local<v8::String> property,
+                                         const v8::AccessorInfo& info);
+    static v8::Handle<v8::Value> GetDevPath(v8::Local<v8::String> property,
+                                            const v8::AccessorInfo& info);
+
+    static void SetRotation(v8::Local<v8::String> property,
+                            v8::Local<v8::Value> value,
+                            const v8::AccessorInfo& info);
 
     // Callbacks
     static void EventCallback(EV_P_ ev_io *watcher, int revents);
@@ -65,8 +78,12 @@ class Monome : node::ObjectWrap {
     void Start();
     void Stop();
 
-  private:
+    // Helpers
+    static const char * EventType(const monome_event_t *event);
+    static v8::Local<v8::Value> ObjectForEvent(const monome_event_t *event);
     static const char* ToCString(const v8::String::Utf8Value& value);
+
+    v8::Local<v8::Function> CallbackForEvent(const monome_event_t *event);
 };
 
 } // namespace node

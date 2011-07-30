@@ -38,7 +38,7 @@ class Grid
   draw: ->
     for x in [0..@width]
       for y in [0..@height]
-        @monome.set x, y, @grid[x][y]
+        @monome.led x, y, @grid[x][y]
 
   toggle: (x, y) ->
     if @grid[x]?[y]?
@@ -53,11 +53,9 @@ tick = ->
 
   setTimeout tick, 50
 
-monome.onbuttondown = (x, y) ->
+monome.onButtonDown = ({x, y}) ->
   grid.toggle x, y
   grid.draw()
-
-monome.onbuttonup = ->
 
 monome.start()
 tick()
