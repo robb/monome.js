@@ -1,22 +1,38 @@
+import Options
+from os import unlink, symlink, popen
+from os.path import exists
+
+srcdir = "."
+blddir = "build"
+VERSION = "0.0.1"
+
 def set_options(opt):
     opt.tool_options('compiler_cxx')
 
 def configure(conf):
     conf.check_tool('compiler_cxx')
     conf.check_tool('node_addon')
-    conf.env.CPPPATH_MONOME = ['/usr/local/include/monome']
 
     conf.check(
        lib          = 'monome',
+       header_name  = 'monome.h',
        libpath      = ['/usr/lib', '/usr/local/lib'],
-       uselib_store ='LIBMONOME'
+       uselib_store ='LIBMONOME',
+       mandatory    = True
     )
 
 def build(bld):
     tgen = bld.new_task_gen('cxx', 'shlib', 'node_addon')
-    tgen.find_sources_in_dirs(['.', 'src'])
-    
+    tgen.find_sources_in_dirs([srcdir])
+
     tgen.cxxflags = ['-g', '-D_FILE_OFFSET_BITS=64', '-D_LARGEFILE_SOURCE', '-Wall']
     tgen.target   = 'monome'
     tgen.includes = ['/usr/local/include/monome']
     tgen.uselib   = 'LIBMONOME'
+
+def shutdown():
+  if Options.commands['clean']:
+    if exists('monome.node'): unlink('monome.node')
+  else:
+    if exists('build/default/monome.node') and not exists('monome.node'):
+      symlink('build/default/monome.node', 'monome.node')

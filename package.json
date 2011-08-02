@@ -1,0 +1,11 @@
+{ "name" :             "monome"
+, "version" :          "0.0.1"
+, "description" :      "A node.js library for monome applications"
+, "scripts":         { "install" : "bash ./install.sh" }
+, "author" :           "Robert Böhnke <robb@robb.is> (http://robb.is)"
+, "keywords" :       [ "monome" ]
+, "homepage" :         "http://monomejs.com"
+, "repository" :     { "type" : "git"
+                     , "url" : "https://github.com/robb/monome.js.git" }
+, "bugs" :           { "web" : "https://github.com/robb/monome.js/issues" }
+}
