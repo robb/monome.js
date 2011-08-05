@@ -38,7 +38,7 @@ class Grid
   draw: ->
     for x in [0..@width]
       for y in [0..@height]
-        @monome.led x, y, @grid[x][y]
+        @monome.setLED x, y, @grid[x][y]
 
   toggle: (x, y) ->
     if @grid[x]?[y]?
