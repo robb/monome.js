@@ -114,31 +114,7 @@ void Monome::SetRotation(Local<String> property,
 {
   Monome* monome = node::ObjectWrap::Unwrap<Monome>(info.Holder());
 
-  monome_rotate_t rotate;
-
-  switch (value->Int32Value()) {
-    case 270:
-      rotate = MONOME_ROTATE_270;
-      break;
-
-    case 180:
-      rotate = MONOME_ROTATE_180;
-      break;
-
-    case 90:
-      rotate = MONOME_ROTATE_90;
-      break;
-
-    case 0:
-      rotate = MONOME_ROTATE_0;
-      break;
-
-    default:
-      // Abort
-      // TODO: Find a way to throw a meaningful exception to JavaScript land
-      return;
-  }
-
+  monome_rotate_t rotate = monome_rotate_t(value->Int32Value() / 90 % 4);
   monome_set_rotation(monome->device, rotate);
 }
 
