@@ -99,8 +99,7 @@ Handle<Value> Monome::GetColumns(Local<String> property,
 
 // this.rotation
 Handle<Value> Monome::GetRotation(Local<String> property,
-                                  const AccessorInfo& info)
-{
+                                  const AccessorInfo& info) {
   Monome* monome = node::ObjectWrap::Unwrap<Monome>(info.Holder());
 
   int rotation = monome_get_rotation(monome->device) * 90;
